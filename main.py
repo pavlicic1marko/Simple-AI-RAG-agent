@@ -1,6 +1,9 @@
 from dotenv import load_dotenv
 import os
 import pandas as pd
+
+load_dotenv()
+
  # core vs legacy
 from llama_index.legacy.query_engine import PandasQueryEngine
 from prompts import new_prompt, instruction_str, context
@@ -8,8 +11,8 @@ from note_engine import  note_engine
 from llama_index.legacy.tools import QueryEngineTool, ToolMetadata
 from llama_index.legacy.agent import ReActAgent
 from llama_index.legacy.llms import OpenAI
+from pdf import canada_engine
 
-load_dotenv()
 
 population_path = os.path.join("data","population.csv")
 population_df = pd.read_csv(population_path)
@@ -23,8 +26,13 @@ tools = [
     QueryEngineTool(query_engine=population_query_engine, metadata=ToolMetadata(
         name="population_data",
         description="this gives information at the world population and demographics"
+        ),
     ),
-),
+    QueryEngineTool(query_engine=canada_engine, metadata=ToolMetadata(
+        name="Canada_data",
+        description="this gives information about Canada, the country"
+        ),
+    ),
 ]
 
 # set an agent that will have access to these tools
